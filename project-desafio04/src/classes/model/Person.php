@@ -1,11 +1,13 @@
 <?php
 
-class Holder {
-    private Cpf $cpf;
-    private string $name;
+namespace Alura\Banco\Model;
+
+class Person {
+
+    protected Cpf $cpf;
+    protected string $name;
 
     //validator
-
     private function validateName (string $name) {
         if(strlen($name) < 8) {
             echo 'The username account must have more than seven words';
@@ -15,15 +17,13 @@ class Holder {
         $this->name = $name;
     }
 
-    // constructor
-
+    //constructor
     public function __construct(Cpf $cpf, string $name) {
         $this->validateName($name);
         $this->cpf = new Cpf($cpf->getCpfNumber());
     }
 
     // getters
-
     public function getCpf (): Cpf {
         return $this->cpf;
     }
@@ -39,5 +39,9 @@ class Holder {
     // setters
     public function setCpf(string $cpf): void {
         $this->cpf = $cpf;
+    }
+
+    public function setName(string $name): void {
+        $this->name = $name;
     }
 }

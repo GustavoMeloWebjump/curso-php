@@ -1,14 +1,19 @@
 <?php
 
-class Account {
-    private Holder $holder;
-    private float $balance = 0;
-    private static int $lenghtAccounts = 0;
+namespace Alura\Banco\Model;
 
-    public function __construct(Holder $holder, float $balance = 0) {   
-        $this->balance = $balance;
+use Alura\Banco\Exceptions\InvalidBalanceException;
+use InvalidArgumentException;
+
+abstract class Account {
+    protected Holder $holder;
+    protected float $balance;
+    protected static int $lenghtAccounts = 0;
+
+    public function __construct(Holder $holder) {   
+        $this->balance = 0;
         self::$lenghtAccounts += 1;
-        $this->holder = new Holder($holder->getCpf(), $holder->getName());
+        $this->holder = new Holder($holder->getCpf(), $holder->getName(), $holder->getAddress());
     }
 
     public function __destruct() {
@@ -54,36 +59,30 @@ class Account {
 
     public function withdraw (float $value) {
 
+        $withdrawValue = $value +($value * $this->rateValue());
+
         if ($value < 0) {
             $value = 0 - $value;
         }
 
-        if ($this->balance < $value) {
-            return 'you cannot withdraw this value, because you do not have balance for this';
+        if ($this->balance < $withdrawValue) {
+            throw new InvalidBalanceException($withdrawValue, $this->getBalance());
         }
 
-        $result = $this->balance - $value;
-        $this->balance -= $value;
+        $result = $this->balance - $withdrawValue;
+        $this->balance -= $withdrawValue;
 
+        echo 'draw out with success';
         return $result;
     } 
 
     public function deposit (float $value) {
         if ($value <= 0) {
-            return 'you need to inform a valid number';
+            throw new InvalidArgumentException('You need to insert a positive number ');
         }
 
         return $this->balance += $value;
     }
 
-    public function transfer (float $value, Account $user) {
-        if ($value <= 0 && $this->balance < $value) {
-            return 'please, insert a valid number';
-        }
-
-        $user->balance += $value;
-        $this->balance -= $value;
-
-        return 'transfered with success ';
-    }
+    abstract protected function rateValue (): float;
 }
