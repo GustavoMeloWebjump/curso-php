@@ -9,15 +9,18 @@ use Desafio\Models\Customers;
 require 'autoload.php';
 
 try {
-    $client = new Customers('gustavo santos', 23000);
+    $client = new Customers('santos', 23000);
 } catch (InvalidNameException | InvalidToInsertCreditOrPriceException $errorOfCreditOrPrice) {
-    $errorOfCreditOrPrice->getMessage();
+    echo $errorOfCreditOrPrice->getMessage();
+    return;
 }
 
 try {
-    $car = new Car('Corsa', 'black', 0, 16304);
+    $car = new Car('Corsa', 'black', 0, 10);
 } catch (InvalidToInsertCreditOrPriceException $errorOfPrice) {
-    $errorOfPrice->getMessage();
+    echo $errorOfPrice->getMessage();
+
+    return;
 }
 
 try{
